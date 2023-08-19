@@ -9,11 +9,20 @@ contract LoyaltyToken is ERC20, Ownable {
 
     // Mapping to store wallet balances
     mapping(address => uint256) private _walletBalances;
+    mapping(uint256 => address) private _walletIds;
+
+    uint256 private _nextWalletId = 1;
 
     // Initialize wallet account
-    function initializeWallet(address walletAddress) external onlyOwner {
+    function initializeWallet() external onlyOwner returns (address) {
+        address walletAddress = address(bytes20(keccak256(abi.encodePacked(address(this), _nextWalletId))));
         require(!_isWalletInitialized(walletAddress), "Wallet already initialized");
+
         _walletBalances[walletAddress] = 0; // Initialize balance to 0
+        _walletIds[_nextWalletId] = walletAddress;
+        _nextWalletId++;
+
+        return walletAddress;
     }
 
     // Get wallet balance
@@ -29,11 +38,11 @@ contract LoyaltyToken is ERC20, Ownable {
     }
 
     // Claim tokens from a wallet
-    function claimTokens(address walletAddress, uint256 amount) external {
-        require(_isWalletInitialized(walletAddress), "Wallet not initialized");
-        require(_walletBalances[walletAddress] >= amount, "Insufficient balance");
-        _walletBalances[walletAddress] -= amount;
-        _burn(walletAddress, amount);
+    function claimTokens(uint256 amount) external {
+        require(_isWalletInitialized(msg.sender), "Wallet not initialized");
+        require(_walletBalances[msg.sender] >= amount, "Insufficient balance");
+        _walletBalances[msg.sender] -= amount;
+        _burn(msg.sender, amount);
     }
 
     // Internal function to check if wallet is initialized
