@@ -1,14 +1,19 @@
+const hre = require("hardhat");
+
 async function main() {
-  const LoyaltyProgram = await ethers.getContractFactory("LoyaltyProgram");
+
+  const name = "SuperCoins";
+  const symbol = "SP";
+  const LoyaltyToken = await hre.ethers.getContractFactory("LoyaltyToken");
 
   // Start deployment, returning a promise that resolves to a contract object
-  const loyalty_program = await LoyaltyProgram.deploy("Loyalty Program!");
-  console.log("Contract deployed to address:", loyalty_program.address);
+  const loyalty_token = await LoyaltyToken.deploy(name, symbol);
+
+  await loyalty_token.deployed();
+  console.log("Contract deployed to address:", loyalty_token.address);
 }
 
-main()
- .then(() => process.exit(0))
- .catch(error => {
-   console.error(error);
-   process.exit(1);
- });
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
