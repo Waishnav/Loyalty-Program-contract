@@ -29,11 +29,11 @@ contract LoyaltyToken is ERC20, Ownable {
     }
 
     // Claim tokens from a wallet
-    function claimTokens(uint256 amount) external {
-        require(_isWalletInitialized(msg.sender), "Wallet not initialized");
-        require(_walletBalances[msg.sender] >= amount, "Insufficient balance");
-        _walletBalances[msg.sender] -= amount;
-        _burn(msg.sender, amount);
+    function claimTokens(address walletAddress, uint256 amount) external {
+        require(_isWalletInitialized(walletAddress), "Wallet not initialized");
+        require(_walletBalances[walletAddress] >= amount, "Insufficient balance");
+        _walletBalances[walletAddress] -= amount;
+        _burn(walletAddress, amount);
     }
 
     // Internal function to check if wallet is initialized
