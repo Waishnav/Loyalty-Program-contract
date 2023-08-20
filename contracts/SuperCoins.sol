@@ -3,8 +3,10 @@
 pragma solidity ^0.8.9;
 
 import "hardhat/console.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract SuperCoin {
+contract SuperCoin is ERC20, Ownable {
 
     enum Role {
         Admin,
@@ -48,7 +50,7 @@ contract SuperCoin {
     int256 public valueOfOneCoin = 10;
     int256 public totalSupply;
 
-    constructor(int256 initialValue) {
+    constructor(int256 initialValue) ERC20("SuperCoin", "SPC") {
         totalSupply = initialValue;
     }
 
